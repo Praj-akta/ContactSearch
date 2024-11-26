@@ -9,10 +9,17 @@ const App = () => {
     dob: "",
     email: "",
     phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: ""
   });
-  const [selectedContact, setSelectedContact] = useState(null);
+  const states = ["MA", "FL", "NY", "AK", "IL", "AZ", "CA", "AR"];
   const [currentPage, setCurrentPage] = useState(1);
-  const contactsPerPage = 5;
+  const [selectedContact, setSelectedContact] = useState(null);
+  const [selectedContactId, setSelectedContactId] = useState(null);
+  const [filteredContacts, setFilteredContacts] = useState(contactsList);
+  // const contactsPerPage = 5;
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -22,35 +29,45 @@ const App = () => {
     }));
   };
 
-  const filteredContacts = contactsList.filter((contact) => {
-    return (
-      (filters.firstName === "" ||
-        contact.firstName
-          .toLowerCase()
-          .includes(filters.firstName.toLowerCase())) &&
-      (filters.lastName === "" ||
-        contact.lastName
-          .toLowerCase()
-          .includes(filters.lastName.toLowerCase())) &&
-      (filters.dob === "" || contact.dob.includes(filters.dob)) &&
-      (filters.email === "" ||
-        contact.email.toLowerCase().includes(filters.email.toLowerCase())) &&
-      (filters.phone === "" || contact.phone.includes(filters.phone))
-    );
-  });
-
-  const indexOfLastContact = currentPage * contactsPerPage;
-  const indexOfFirstContact = indexOfLastContact - contactsPerPage;
-  const currentContacts = filteredContacts.slice(
-    indexOfFirstContact,
-    indexOfLastContact
-  );
-
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleContactSelect = (contact) => {
-    setSelectedContact(contact);
+    if(selectedContactId === contact?.id) {
+      setSelectedContact(null);
+      setSelectedContactId(null)
+    } else {
+      setSelectedContact(contact);
+      setSelectedContactId(contact?.id)
+    }
   };
+
+  const clearFields = () => {
+    setFilters({
+      firstName: "",
+      lastName: "",
+      dob: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      state: "",
+      zip: ""
+    });
+    setFilteredContacts(contactsList);
+  };
+
+  const handleSearch = () => {
+    const filteredResults = contactsList.filter((contact) => {
+      return Object.keys(filters).every((key) => {
+        if(key === "dob" && filters[key]) {
+          const contactDob = new Date(contact[key]).toISOString().split('T')[0];
+          return contactDob.includes(filters[key]);
+        }
+        return contact[key]?.toString().toLowerCase().includes(filters[key]?.toString().toLowerCase())
+      })
+    })
+    setFilteredContacts(filteredResults)
+  }
 
   return (
     <div>
@@ -61,7 +78,7 @@ const App = () => {
           <div className="grid grid-cols-3 gap-3">
             <div className="flex flex-col">
               <label className="text-sm font-bold text-gray-500">
-                First name{" "}
+                First name
               </label>
               <input
                 type="text"
@@ -73,7 +90,7 @@ const App = () => {
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-bold text-gray-500">
-                Last name{" "}
+                Last name
               </label>
               <input
                 type="text"
@@ -85,7 +102,7 @@ const App = () => {
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-bold text-gray-500">
-                Date of Birth{" "}
+                Date of Birth
               </label>
               <input
                 type="date"
@@ -110,7 +127,7 @@ const App = () => {
             </div>
             <div className="flex flex-col">
               <label className="text-sm font-bold text-gray-500">
-                Phone Number{" "}
+                Phone Number
               </label>
               <input
                 type="text"
@@ -128,8 +145,8 @@ const App = () => {
               </label>
               <input
                 type="text"
-                name="streetAddress"
-                value={filters.streetAddress}
+                name="address"
+                value={filters.address}
                 className="border border-gray-400 rounded-md py-1 px-3"
                 onChange={handleFilterChange}
               />
@@ -148,12 +165,15 @@ const App = () => {
               <div className="flex flex-col col-span-1">
                 <label className="text-sm font-bold text-gray-500">State</label>
                 <select
-                  type="text"
                   name="state"
                   value={filters.state}
                   className="border border-gray-400 rounded-md py-1 px-3"
-                  onChange={handleFilterChange}
-                />
+                  onChange={handleFilterChange}>
+                  <option value="">  </option>
+                  {
+                    states.map((state) => <option key={state} value={state}>{state}</option>)
+                  }
+                </select>
               </div>
               <div className="flex flex-col col-span-1">
                 <label className="text-sm font-bold text-gray-500">
@@ -161,8 +181,8 @@ const App = () => {
                 </label>
                 <input
                   type="text"
-                  name="zipcode"
-                  value={filters.zipcode}
+                  name="zip"
+                  value={filters.zip}
                   className="border border-gray-400 rounded-md py-1 px-3"
                   onChange={handleFilterChange}
                 />
@@ -171,8 +191,18 @@ const App = () => {
           </div>
         </div>
 
-        <button className="border border-gray-400 px-4 py-1 
-          rounded-md my-5 text-[#377ed9] font-semibold">
+        <button
+          className="border border-gray-400 px-4 py-1 
+          rounded-md my-5 text-[#377ed9] font-semibold mr-3"
+          onClick={(_) => clearFields()}
+        >
+          Clear
+        </button>
+        <button
+          className="border border-gray-400 px-4 py-1 
+          rounded-md my-5 text-[#377ed9] font-semibold"
+          onClick={_ => handleSearch()}
+        >
           Search
         </button>
       </div>
@@ -192,46 +222,40 @@ const App = () => {
           </tr>
         </thead>
         <tbody>
-          {currentContacts.map((contact) => (
+          {filteredContacts.map((contact) => (
             <tr key={contact.id} className="border-b border-gray-300">
               <td>
-                <button onClick={() => handleContactSelect(contact)}>
-                  Select
-                </button>
+                <input type="checkbox"
+                  checked={contact?.id === selectedContactId}
+                  onChange={_ => handleContactSelect(contact)}
+                />
               </td>
               <td>
                 {contact.firstName} {contact.lastName}
               </td>
               <td>{contact.dob}</td>
-              <td>{contact.address}</td>
-              <td>{contact.city}</td>  
+              <td>{contact.address.toLocaleUpperCase()}</td>
+              <td>{contact.city.toLocaleUpperCase()}</td>
               <td>{contact.state}</td>
               <td>{contact.zip}</td>
               <td>{contact.email}</td>
               <td>{contact.phone}</td>
-              
             </tr>
           ))}
         </tbody>
       </table>
 
       <div className="flex justify-end my-3">
-        {Array.from(
-          { length: Math.ceil(filteredContacts.length / contactsPerPage) },
-          (_, index) => (
-            <button key={index + 1} onClick={() => paginate(index + 1)}
-              className="bg-[#377ed9] text-white px-4 py-1 mr-10">
-              {index + 1}
-            </button>
-          )
-        )}
+        <button className="bg-[#377ed9] text-white px-4 py-1 mr-10">
+          {currentPage}
+        </button>
       </div>
 
       {selectedContact && (
         <div className="selected-contact">
           <h2 className="font-bold text-lg mt-5 underline">Selected Contact</h2>
           <p>
-            <strong>Name:</strong> {selectedContact.firstName}
+            <strong>Name:</strong> {selectedContact.firstName}{" "}
             {selectedContact.lastName}
           </p>
           <p>
