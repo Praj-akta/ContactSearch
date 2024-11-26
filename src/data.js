@@ -1,0 +1,26 @@
+export const contactsList = [
+    {
+      id: 1,
+      firstName: 'John',
+      lastName: 'Doe',
+      dob: '1990-01-01',
+      email: 'john.doe@example.com',
+      phone: '123-456-7890',
+      address: '123 Main St',
+      city: 'Springfield',
+      state: 'IL',
+      zip: '62701',
+    },
+    {
+      id: 2,
+      firstName: 'Jane',
+      lastName: 'Smith',
+      dob: '1985-03-15',
+      email: 'jane.smith@example.com',
+      phone: '987-654-3210',
+      address: '456 Elm St',
+      city: 'Shelbyville',
+      state: 'IL',
+      zip: '62565',
+    },
+  ];
