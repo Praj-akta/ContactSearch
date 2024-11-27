@@ -1,4 +1,5 @@
 # ContactSearch
+Link of the application: https://praj-akta.github.io/contactsearch/
 # Documentation and Instructions 
 
 ### Prerequisites
@@ -18,6 +19,11 @@ Before deploying the application, ensure the following:
 
 1. Update the contact list in data.js file to include your contact information.
 2. App.css and Tailwind.css is used for styling. 
+
+### Deploying the application
+
+1. Deploy to github pages. Install the github pages package by `npm install gh-pages --save-dev`
+2. In the package.json, add homepage: "https://<username>.github.io/repository-name/" and in the scripts add predeploy: "npm run build", deploy: "gh-pages -d build".
 
 # Key Features
 
