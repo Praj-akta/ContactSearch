@@ -10,10 +10,14 @@ Before deploying the application, ensure the following:
 
 ### Setting up locally
 
-1. Clone the repository from your version control system (e.g., GitHub): git clone <repository-url> or download the source code and extract it into a project folder.
-2. Install dependencies. Navigate to project-directory through cd <project-folder> and `npm install` (Which will install the neccessary node modules (packages, dependencies)
+1. Clone the repository from your version control system (e.g., GitHub): git clone repository-url or download the source code and extract it into a project folder.
+2. Install dependencies. Navigate to project-directory through cd project-folder and `npm install` (Which will install the neccessary node modules (packages, dependencies)
 3. `npm start` to run the application locally, Open (http://localhost:3000) to view it in your browser.
 
+### Application configuration
+
+1. Update the contact list in data.js file to include your contact information.
+2. App.css and Tailwind.css is used for styling. 
 
 # Key Features
 
