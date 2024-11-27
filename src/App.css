@@ -21,9 +21,18 @@ code {
 }
 table th, tbody td {
   text-align: left;
-  padding: 7px 0;
+  padding: 7px 5px;
 }
-table {
-  width: 97%;
-  overflow: scroll;
+.table-scroll {
+  position: relative;
+  width: 98%;
+  max-width: 98%;
+  z-index: 1;
+  margin: auto;
+  overflow: auto;
+}
+.table-scroll table {
+  width: 100%;
+  min-width: 1200px;
+  margin: auto;
 }
