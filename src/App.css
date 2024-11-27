@@ -36,3 +36,10 @@ table th, tbody td {
   min-width: 1200px;
   margin: auto;
 }
+
+@media screen and (max-width: 768px) {
+  .filters-container {
+    display: flex;
+    flex-direction: column;
+  }
+}

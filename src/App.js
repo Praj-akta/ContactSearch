@@ -1,22 +1,11 @@
 import React, { useState } from "react";
-import Filters from "./Filters";
 import { contactsList } from "./data";
-import ContactsList from "./ContactsList";
-import ContactDetails from "./ContactDetails";
+import Filters from "./components/Filters";
+import ContactsList from "./components/ContactsList";
+import ContactDetails from "./components/ContactDetails";
 import "./App.css";
 
 const App = () => {
-  const [filters, setFilters] = useState({
-    firstName: "",
-    lastName: "",
-    dob: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    zip: "",
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedContact, setSelectedContact] = useState(null);
   const [selectedContactId, setSelectedContactId] = useState(null);
@@ -32,14 +21,6 @@ const App = () => {
   );
   const totalPages = Math.ceil(contactsList.length / contactsPerPage);
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      [name]: value,
-    }));
-  };
-
   const handleContactSelect = (contact) => {
     if (selectedContactId === contact?.id) {
       setSelectedContact(null);
@@ -51,22 +32,11 @@ const App = () => {
   };
 
   const clearFields = () => {
-    setFilters({
-      firstName: "",
-      lastName: "",
-      dob: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-    });
     setFilteredContacts(contactsList);
     setCurrentPage(1);
   };
 
-  const handleSearch = () => {
+  const handleSearch = (filters) => {
     const filteredResults = contactsList.filter((contact) => {
       return Object.keys(filters).every((key) => {
         if (key === "dob" && filters[key]) {
@@ -97,14 +67,9 @@ const App = () => {
   return (
     <div>
       <h1 className="text-xl font-bold"> Choose a contact </h1>
-      <Filters 
-        filters={filters}
-        clearFields={clearFields}
-        handleSearch={handleSearch}
-        handleFilterChange={handleFilterChange}
-      />
-      
-      <ContactsList 
+      <Filters clearFields={clearFields} handleSearch={handleSearch} />
+
+      <ContactsList
         onNextPage={onNextPage}
         onPrevPage={onPrevPage}
         currentPage={currentPage}
@@ -114,9 +79,7 @@ const App = () => {
         handleContactSelect={handleContactSelect}
       />
 
-      {selectedContact && (
-        <ContactDetails selectedContact={selectedContact} />
-      )}
+      {selectedContact && <ContactDetails selectedContact={selectedContact} />}
     </div>
   );
 };

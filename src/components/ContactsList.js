@@ -1,7 +1,7 @@
 import React from "react";
-import leftArrowImg from "./images/left-arrow.png";
-import rightArrowImg from "./images/right-arrow.png";
-import "./App.css";
+import leftArrowImg from "../images/left-arrow.png";
+import rightArrowImg from "../images/right-arrow.png";
+import "../App.css";
 
 function ContactsList({
   currentPage,
@@ -31,7 +31,10 @@ function ContactsList({
           </thead>
           <tbody>
             {currentContacts?.map((contact) => (
-              <tr key={contact.id} className="border-b border-gray-300">
+              <tr 
+                key={contact.id} 
+                className="border-b border-gray-300 cursor-pointer"
+                onClick={(_) => handleContactSelect(contact)}>
                 <td>
                   <input
                     type="checkbox"
@@ -62,7 +65,12 @@ function ContactsList({
       )}
 
       {currentContacts?.length > 0 && (
-        <div className="flex items-center justify-end my-3 mr-10">
+        <div className="flex items-center justify-between my-3">
+          <div className="ml-5">
+            <strong>Total number of contacts:</strong> {currentContacts?.length}
+          </div>
+          <div className="flex items-center justify-end mr-10">
+
           <img
             src={leftArrowImg}
             alt="left-arrow"
@@ -86,6 +94,7 @@ function ContactsList({
                 : "opacity-45 cursor-pointer"
             }`}
           />
+          </div>
         </div>
       )}
     </div>

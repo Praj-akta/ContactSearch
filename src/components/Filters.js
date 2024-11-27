@@ -1,14 +1,48 @@
-import React from "react";
-import "./App.css";
+import React, {useState} from "react";
+import "../App.css";
 
-function Filters({ filters, handleFilterChange, clearFields, handleSearch }) {
+function Filters({ clearFields, handleSearch }) {
   const states = ["MA", "FL", "NY", "AK", "IL", "AZ", "CA", "AR"];
+  const [filters, setFilters] = useState({
+    firstName: "",
+    lastName: "",
+    dob: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+
+  const handleClearFilter = () => {
+    setFilters({
+      firstName: "",
+      lastName: "",
+      dob: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
+    });
+    clearFields();
+  }
 
   return (
     <div className="filters">
       <h3 className="text-md font-bold mt-5 mb-3"> Search for a contact </h3>
-      <div className="grid grid-cols-2 gap-36">
-        <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 xl:gap-40 lg:gap-32 md:gap-10 filters-container">
+        <div className="grid grid-cols-3 gap-3 mb-3">
           <div className="flex flex-col">
             <label className="text-sm font-bold text-gray-500">
               First name
@@ -69,7 +103,7 @@ function Filters({ filters, handleFilterChange, clearFields, handleSearch }) {
             />
           </div>
         </div>
-        <div className="grid">
+        <div className="grid gap-3 mb-3">
           <div className="flex flex-col">
             <label className="text-sm font-bold text-gray-500">
               Street address
@@ -128,14 +162,14 @@ function Filters({ filters, handleFilterChange, clearFields, handleSearch }) {
       <button
         className="border border-gray-400 px-4 py-1 
       rounded-md my-5 text-[#377ed9] font-semibold mr-3"
-        onClick={(_) => clearFields()}
+        onClick={(_) => handleClearFilter()}
       >
         Clear
       </button>
       <button
         className="border border-gray-400 px-4 py-1 
       rounded-md my-5 text-[#377ed9] font-semibold"
-        onClick={(_) => handleSearch()}
+        onClick={(_) => handleSearch(filters)}
       >
         Search
       </button>
